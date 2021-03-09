@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  version: "0.1"
+  title: "TickTap Main Service API"
+  description: "This is the API documentation for a fictional company called TickTap LLC that services event ticketing for personal and commercial events."
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/zfanelle/ticktap/0.1
+  - description: SwaggerHub API Auto Mocking
+    url: localhost
+paths:
+  /account:
+    post:
+      tags:
+        - "account"
+      summary: Create a account
+      responses:
+        "200":
+          description: success
+      requestBody:
+        $ref: "#/components/requestBodies/account"
+    get:
+      tags:
+        - "account"
+      summary: Get all accounts
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/account"
+  /account/{accountId}:
+    get:
+      tags:
+        - "account"
+      summary: get a specific account
+      parameters:
+        - $ref: "#/components/parameters/accountId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/account"
+  /ticket:
+    get:
+      tags:
+        - "ticket"
+      summary: Get all tickets
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ticket"
+  /ticket/{ticketId}:
+    get:
+      tags:
+        - "ticket"
+      summary: Get a ticket by ticket id
+      parameters:
+        - $ref: "#/components/parameters/ticketId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ticket"
+  /ticket/transaction/{transactionId}:
+    get:
+      tags:
+        - "ticket"
+      summary: Get all tickets by transaction id
+      parameters:
+        - $ref: "#/components/parameters/transactionId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ticket"
+  /event:
+    post:
+      tags:
+        - "event"
+      summary: Create an event
+      responses:
+        "200":
+          description: success
+      requestBody:
+        $ref: "#/components/requestBodies/event"
+    get:
+      tags:
+        - "event"
+      summary: Get all events
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/event"
+  /event/{eventId}:
+    get:
+      tags:
+        - "event"
+      summary: get a specific event
+      parameters:
+        - $ref: "#/components/parameters/eventId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/event"
+  /transaction:
+    post:
+      tags:
+        - "transaction"
+      summary: Create a transaction
+      responses:
+        "200":
+          description: success
+      requestBody:
+        $ref: "#/components/requestBodies/transaction"
+    get:
+      tags:
+        - "transaction"
+      summary: Get all transactions
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/transaction"
+  /transaction/{transactionId}:
+    get:
+      tags:
+        - "transaction"
+      summary: get a specific transaction
+      parameters:
+        - $ref: "#/components/parameters/transactionId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/transaction"
+
+components:
+  schemas:
+    account:
+      type: object
+      properties:
+        accountId:
+          type: integer
+        accountName:
+          type: string
+        accountType:
+          type: string
+          enum: [personal, corporate, host]
+    ticket:
+      type: object
+      properties:
+        ticketId:
+          type: integer
+        account:
+          type: integer
+        event:
+          type: integer
+        dateOfPurchase:
+          type: string
+          format: datetime
+    event:
+      type: object
+      properties:
+        eventId:
+          type: integer
+        host:
+          type: integer
+        stock:
+          type: integer
+        ticketsAvailable:
+          type: integer
+    transaction:
+      type: object
+      properties:
+        transactionId:
+          type: integer
+        event:
+          type: integer
+        quantity:
+          type: integer
+    requestAccount:
+      type: object
+      properties:
+        entityName:
+          type: string
+        accountType:
+          type: string
+          enum: [personal, corporate, host]
+    requestEvent:
+      type: object
+      properties:
+        name:
+          type: string
+        host:
+          type: integer
+        stock:
+          type: integer
+    requestTransaction:
+      type: object
+      properties:
+        event:
+          type: integer
+        quantity:
+          type: integer
+  requestBodies:
+    account:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestAccount"
+    event:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestEvent"
+    transaction:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestTransaction"
+  parameters:
+    accountId:
+      in: path
+      name: accountId
+      required: true
+      schema:
+        type: integer
+    ticketId:
+      in: path
+      name: ticketId
+      required: true
+      schema:
+        type: integer
+    eventId:
+      in: path
+      name: eventId
+      required: true
+      schema:
+        type: integer
+    transactionId:
+      in: path
+      name: transactionId
+      required: true
+      schema:
+        type: integer
+tags:
+  - name: "event"
+    description: "Events represent venues with a duration. Examples: conferences, films, train tickets, media events, etc. "
+  - name: "account"
+    description: "Account refers to the user(s) claiming tickets or users hosting events."
+  - name: "ticket"
+    description: "Ticket refers to a single admission recipt to an event. Example: concert ticket"
+  - name: "transaction"
+    description: "Transaction refers to one or more tickets. For example, a family bys 5 tickets to a basketball game in a transaction."

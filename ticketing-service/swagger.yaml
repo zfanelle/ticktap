@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  version: "0.1"
+  title: "TickTap Ticketing Service API"
+  description: "This is the API documentation for a fictional company called TickTap LLC that services event ticketing for personal and commercial events."
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/zfanelle/ticktap/0.1
+  - description: SwaggerHub API Auto Mocking
+    url: localhost
+paths:
+  /transaction:
+    post:
+      tags:
+        - "transaction"
+      summary: Create a transaction that generates tickets
+      responses:
+        "200":
+          description: success
+      requestBody:
+        $ref: "#/components/requestBodies/transaction"
+    get:
+      tags:
+        - "transaction"
+      summary: Get all transactions
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/transaction"
+  /transaction/{transactionId}:
+    get:
+      tags:
+        - "transaction"
+      summary: get a specific transaction
+      parameters:
+        - $ref: "#/components/parameters/transactionId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/transaction"
+
+components:
+  schemas:
+    ticket:
+      type: object
+      properties:
+        ticketId:
+          type: integer
+        accountId:
+          type: integer
+        event:
+          type: integer
+        dateOfPurchase:
+          type: string
+          format: datetime
+    transaction:
+      type: object
+      properties:
+        transactionId:
+          type: integer
+        event:
+          type: integer
+        quantity:
+          type: integer
+    requestTransaction:
+      type: object
+      properties:
+        accountId:
+          type: integer
+        eventId:
+          type: integer
+        quantity:
+          type: integer
+  requestBodies:
+    account:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestAccount"
+    event:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestEvent"
+    transaction:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestTransaction"
+  parameters:
+    accountId:
+      in: path
+      name: accountId
+      required: true
+      schema:
+        type: integer
+    ticketId:
+      in: path
+      name: ticketId
+      required: true
+      schema:
+        type: integer
+    eventId:
+      in: path
+      name: eventId
+      required: true
+      schema:
+        type: integer
+    transactionId:
+      in: path
+      name: transactionId
+      required: true
+      schema:
+        type: integer
+tags:
+  - name: "transaction"
+    description: "Transaction refers to one or more tickets. For example, a family bys 5 tickets to a basketball game in a transaction."
