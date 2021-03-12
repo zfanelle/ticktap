@@ -24,13 +24,11 @@ pub async fn create_account(
 pub async fn get_all_accounts(app_config: &AppConfig) -> Result<Vec<Account>, RepositoryError> {
     let db_accounts = account_repository::get_all_accounts(app_config).await?;
 
-    let mut accounts: Vec<Account> = vec![];
-
-    for x in db_accounts.iter() {
-        let new_account = x.clone();
-        let new_account = new_account.convert_to_account();
-        accounts.push(new_account);
-    }
+    let accounts: Vec<Account> = db_accounts
+        .iter()
+        .cloned()
+        .map(|e| e.convert_to_account())
+        .collect();
 
     Ok(accounts)
 }
