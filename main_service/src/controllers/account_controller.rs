@@ -8,10 +8,10 @@ use log::debug;
 use serde_json::to_string;
 
 #[get("/account/{account_id}")]
-pub async fn get_account(
-    web::Path(account_id): web::Path<String>,
+pub async fn get_account(path: web::Path<String>,
     app_config: web::Data<AppConfig>,
 ) -> Result<HttpResponse, Error> {
+    let account_id = path.into_inner();
     let response_body = service_get_account(app_config.get_ref(), account_id).await?;
 
     let response_string = to_string(&response_body)?;
