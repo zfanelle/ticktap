@@ -16,6 +16,7 @@ CREATE TABLE ticktap.`event` (
   `id` int NOT NULL AUTO_INCREMENT,
   `host` int NOT NULL,
   `event_name` varchar(1000) NOT NULL,
+  `maximum_ticket_capacity` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `event_FK` (`host`),
   CONSTRAINT `event_FK` FOREIGN KEY (`host`) REFERENCES `account` (`id`)
