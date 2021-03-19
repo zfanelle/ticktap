@@ -18,22 +18,24 @@ pub async fn create_event(app_config: &AppConfig, event: &Event) -> Result<(), R
     Ok(())
 }
 
-pub async fn get_event(app_config: &AppConfig, event_id: i32) -> Result<EventDB, RepositoryError> {
+pub async fn get_event(app_config: &AppConfig, event_id: i32) -> Result<Event, RepositoryError> {
     let pool = app_config.db_pool.clone();
 
     let sql = "SELECT * FROM event WHERE id = ?";
 
     let event: EventDB = sqlx::query_as(sql).bind(event_id).fetch_one(&pool).await?;
 
-    Ok(event)
+    Ok(event.db_to_event())
 }
 
-pub async fn get_all_events(app_config: &AppConfig) -> Result<Vec<EventDB>, RepositoryError> {
+pub async fn get_all_events(app_config: &AppConfig) -> Result<Vec<Event>, RepositoryError> {
     let pool = app_config.db_pool.clone();
 
     let sql = "SELECT * from event";
 
     let events: Vec<EventDB> = sqlx::query_as(sql).fetch_all(&pool).await?;
+
+    let events: Vec<Event> = events.iter().cloned().map(|e| e.db_to_event()).collect();
 
     Ok(events)
 }

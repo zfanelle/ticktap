@@ -12,13 +12,9 @@ pub async fn get_event(app_config: &AppConfig, event_id: String) -> Result<Event
     let event_id = event_id.parse()?;
     let event = event_repository::get_event(app_config, event_id).await?;
 
-    Ok(event.db_to_event())
+    Ok(event)
 }
 
 pub async fn get_all_events(app_config: &AppConfig) -> Result<Vec<Event>, RepositoryError> {
-    let db_events = event_repository::get_all_events(app_config).await?;
-
-    let events: Vec<Event> = db_events.iter().cloned().map(|e| e.db_to_event()).collect();
-
-    Ok(events)
+    Ok(event_repository::get_all_events(app_config).await?)
 }
