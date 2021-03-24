@@ -16,6 +16,8 @@ pub async fn create_transaction(
     app_config: &AppConfig,
     transaction: &Transaction,
 ) -> Result<(), RepositoryError> {
+    // check ticketing service and book tickets
+
     transaction_repository::create_transaction(app_config, &transaction).await?;
     Ok(())
 }
