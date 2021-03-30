@@ -17,6 +17,7 @@ pub struct Config {
 #[derive(Debug, Clone)]
 pub struct AppConfig {
     pub db_pool: MySqlPool,
+    pub http_client: reqwest::Client,
 }
 
 impl Config {
@@ -39,8 +40,12 @@ impl Config {
 
         let new_db_pool = db_pool.unwrap();
 
+        // Initialize http client
+        let client = reqwest::Client::new();
+
         let app_config = AppConfig {
             db_pool: new_db_pool,
+            http_client: client,
         };
 
         return app_config;

@@ -25,7 +25,7 @@ pub async fn create_transaction(
         _ => return Err(RepositoryError::UnexpectedError),
     };
 
-    // check ticketing service and book tickets
+    book_tickets(app_config, transaction);
 
     transaction_repository::create_transaction(app_config, &transaction).await?;
     Ok(())
@@ -35,4 +35,19 @@ pub async fn get_all_transactions(
     app_config: &AppConfig,
 ) -> Result<Vec<Transaction>, RepositoryError> {
     Ok(transaction_repository::get_all_transactions(app_config).await?)
+}
+
+async fn book_tickets(
+    app_config: &AppConfig,
+    transaction: &Transaction,
+) -> Result<(), RepositoryError> {
+    // check ticketing service and book tickets
+    let client = app_config.http_client.clone();
+    let res = client
+        .post("http://localhost:5555/post")
+        .body("the exact body that is sent")
+        .send()
+        .await?;
+
+    Ok(())
 }

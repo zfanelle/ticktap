@@ -9,6 +9,7 @@ pub enum RepositoryError {
     #[display(fmt = "Customer id must be a positive integer.")]
     ParseParameterError(ParseIntError),
     AccountNotFound,
+    HTTPClientError,
     UnexpectedError,
 }
 
@@ -21,6 +22,12 @@ impl From<sqlx_error> for RepositoryError {
 impl From<ParseIntError> for RepositoryError {
     fn from(err: ParseIntError) -> RepositoryError {
         RepositoryError::ParseParameterError(err)
+    }
+}
+
+impl From<reqwest::Error> for RepositoryError {
+    fn from(err: reqwest::Error) -> RepositoryError {
+        RepositoryError::HTTPClientError
     }
 }
 
