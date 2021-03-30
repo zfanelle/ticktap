@@ -46,50 +46,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/account"
-  /ticket:
-    get:
-      tags:
-        - "ticket"
-      summary: Get all tickets
-      responses:
-        "200":
-          description: success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ticket"
-  /ticket/{ticketId}:
-    get:
-      tags:
-        - "ticket"
-      summary: Get a ticket by ticket id
-      parameters:
-        - $ref: "#/components/parameters/ticketId"
-      responses:
-        "200":
-          description: success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ticket"
-  /ticket/transaction/{transactionId}:
-    get:
-      tags:
-        - "ticket"
-      summary: Get all tickets by transaction id
-      parameters:
-        - $ref: "#/components/parameters/transactionId"
-      responses:
-        "200":
-          description: success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ticket"
   /event:
     post:
       tags:

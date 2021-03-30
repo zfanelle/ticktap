@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   version: "0.1"
   title: "TickTap Ticketing Service API"
@@ -9,20 +9,11 @@ servers:
   - description: SwaggerHub API Auto Mocking
     url: localhost
 paths:
-  /transaction:
-    post:
-      tags:
-        - "transaction"
-      summary: Create a transaction that generates tickets
-      responses:
-        "200":
-          description: success
-      requestBody:
-        $ref: "#/components/requestBodies/transaction"
+  /ticket:
     get:
       tags:
-        - "transaction"
-      summary: Get all transactions
+        - "ticket"
+      summary: Get all tickets
       responses:
         "200":
           description: success
@@ -31,12 +22,35 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/transaction"
-  /transaction/{transactionId}:
+                  $ref: "#/components/schemas/ticket"
+    post:
+      tags:
+        - "ticket"
+      summary: Create ticket(s)
+      responses:
+        "200":
+          description: success
+      requestBody:
+        $ref: "#/components/requestBodies/ticket"
+  /ticket/{ticketId}:
     get:
       tags:
-        - "transaction"
-      summary: get a specific transaction
+        - "ticket"
+      summary: Get a ticket by ticket id
+      parameters:
+        - $ref: "#/components/parameters/ticketId"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ticket"
+  /ticket/transaction/{transactionId}:
+    get:
+      tags:
+        - "ticket"
+      summary: Get all tickets by transaction id
       parameters:
         - $ref: "#/components/parameters/transactionId"
       responses:
@@ -45,7 +59,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/transaction"
+                type: array
+                items:
+                  $ref: "#/components/schemas/ticket"
 
 components:
   schemas:
@@ -61,56 +77,23 @@ components:
         dateOfPurchase:
           type: string
           format: datetime
-    transaction:
+    createTicket:
       type: object
       properties:
         transactionId:
           type: integer
-        event:
-          type: integer
-        quantity:
-          type: integer
-    requestTransaction:
-      type: object
-      properties:
-        accountId:
-          type: integer
-        eventId:
-          type: integer
-        quantity:
-          type: integer
+
   requestBodies:
-    account:
+    ticket:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/requestAccount"
-    event:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/requestEvent"
-    transaction:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/requestTransaction"
+            $ref: "#/components/schemas/createTicket"
+
   parameters:
-    accountId:
-      in: path
-      name: accountId
-      required: true
-      schema:
-        type: integer
     ticketId:
       in: path
       name: ticketId
-      required: true
-      schema:
-        type: integer
-    eventId:
-      in: path
-      name: eventId
       required: true
       schema:
         type: integer
