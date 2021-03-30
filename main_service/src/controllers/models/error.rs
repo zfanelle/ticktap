@@ -9,6 +9,7 @@ pub enum RepositoryError {
     #[display(fmt = "Customer id must be a positive integer.")]
     ParseParameterError(ParseIntError),
     AccountNotFound,
+    UnexpectedError,
 }
 
 impl From<sqlx_error> for RepositoryError {
