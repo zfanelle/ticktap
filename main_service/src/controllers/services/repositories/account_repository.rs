@@ -22,7 +22,7 @@ pub async fn create_account(
 
 pub async fn get_account(
     app_config: &AppConfig,
-    account_id: u32,
+    account_id: i32,
 ) -> Result<Account, RepositoryError> {
     let pool = app_config.db_pool.clone();
 
