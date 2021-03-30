@@ -1,6 +1,9 @@
 use crate::config::Config;
 use crate::controllers::account_controller::{create_account, get_account, get_accounts, test};
 use crate::controllers::event_controller::{create_event, get_event, get_events};
+use crate::controllers::transaction_controller::{
+    create_transaction, get_transaction, get_transactions,
+};
 use actix_web::{App, HttpServer};
 
 mod config;
@@ -21,6 +24,9 @@ async fn main() -> std::io::Result<()> {
             .service(get_event)
             .service(create_event)
             .service(get_events)
+            .service(create_transaction)
+            .service(get_transactions)
+            .service(get_transaction)
             .service(test)
             .data(app_config.clone())
     })

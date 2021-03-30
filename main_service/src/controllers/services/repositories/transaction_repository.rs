@@ -8,8 +8,8 @@ pub async fn create_transaction(
 ) -> Result<(), RepositoryError> {
     let pool = app_config.db_pool.clone();
 
-    let sql = "INSERT INTO transaction (`event`, `account`, `maximum_ticket_capacity`)
-    VALUES(?, ?, ?)";
+    let sql = "INSERT INTO transaction (`event`, `account`)
+    VALUES(?, ?)";
 
     sqlx::query(sql)
         .bind(&transaction.event)
