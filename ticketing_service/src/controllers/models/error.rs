@@ -11,6 +11,8 @@ pub enum RepositoryError {
     TicketNotFound,
     QuantityNotFound,
     InsufficientTicketsAvailable,
+    MainServiceDown,
+    UnableToParseResponseFromMainService,
 }
 
 #[derive(Debug, Display)]
@@ -39,5 +41,17 @@ impl ResponseError for RepositoryError {
     fn error_response(&self) -> HttpResponse {
         let detail = &self.to_string();
         HttpResponse::BadRequest().body(detail)
+    }
+}
+
+impl From<reqwest::Error> for RepositoryError {
+    fn from(err: reqwest::Error) -> RepositoryError {
+        RepositoryError::MainServiceDown
+    }
+}
+
+impl From<serde_json::Error> for RepositoryError {
+    fn from(err: serde_json::Error) -> RepositoryError {
+        RepositoryError::UnableToParseResponseFromMainService
     }
 }

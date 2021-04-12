@@ -43,7 +43,7 @@ pub async fn get_all_tickets(app_config: &AppConfig) -> Result<Vec<Ticket>, Repo
     Ok(tickets)
 }
 
-pub async fn check_ticket_quantity(app_config: &AppConfig) -> Result<i32, RepositoryError> {
+pub async fn check_booked_tickets(app_config: &AppConfig) -> Result<i32, RepositoryError> {
     let pool = app_config.db_pool.clone();
 
     let sql = "SELECT Count(*)
@@ -76,4 +76,16 @@ pub async fn get_all_tickets_by_transaction(
     let tickets: Vec<Ticket> = tickets.iter().cloned().map(|e| e.db_to_ticket()).collect();
 
     Ok(tickets)
+}
+
+pub async fn check_ticket_quantity(app_config: &AppConfig) -> Result<i32, RepositoryError> {
+    let pool = app_config.db_pool.clone();
+
+    let sql = "SELECT maximum_ticket_capacity FROM `ticktap`.`event` e JOIN `ticktap`.`transaction` t on (t.event = e.id)";
+
+    let ticket_count = sqlx::query(sql).fetch_one(&pool).await?;
+
+    let ticket_count: i32 = ticket_count.get(0);
+
+    Ok(ticket_count)
 }

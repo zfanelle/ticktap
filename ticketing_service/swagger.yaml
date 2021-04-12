@@ -82,6 +82,8 @@ components:
       properties:
         transactionId:
           type: integer
+        quantity:
+          type: integer
 
   requestBodies:
     ticket:
