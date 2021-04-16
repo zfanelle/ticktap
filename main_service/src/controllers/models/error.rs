@@ -31,6 +31,12 @@ impl From<reqwest::Error> for RepositoryError {
     }
 }
 
+impl From<serde_json::Error> for RepositoryError {
+    fn from(err: serde_json::Error) -> RepositoryError {
+        RepositoryError::UnexpectedError
+    }
+}
+
 impl ResponseError for RepositoryError {
     fn error_response(&self) -> HttpResponse {
         let detail = &self.to_string();

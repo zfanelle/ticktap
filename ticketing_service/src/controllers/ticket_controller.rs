@@ -3,6 +3,8 @@ use super::services::ticket_service::create_ticket as service_create_ticket;
 use super::services::ticket_service::get_all_tickets as service_get_all_tickets;
 use super::services::ticket_service::get_all_tickets_by_transaction as service_get_all_tickets_by_transaction;
 use super::services::ticket_service::get_ticket as service_get_ticket;
+use super::services::ticket_service::get_ticket_quantity_by_transaction as service_get_ticket_quantity_by_transaction;
+
 use crate::config::AppConfig;
 use actix_web::{get, post, web, Error, HttpResponse};
 use log::debug;
@@ -21,7 +23,7 @@ pub async fn get_ticket(
 }
 
 #[get("/ticket/transaction/{transaction_id}")]
-pub async fn get_all_tickets_by_transactioni(
+pub async fn get_all_tickets_by_transaction(
     path: web::Path<i32>,
     app_config: web::Data<AppConfig>,
 ) -> Result<HttpResponse, Error> {
@@ -31,6 +33,19 @@ pub async fn get_all_tickets_by_transactioni(
 
     let response_string = to_string(&response_body)?;
     Ok(HttpResponse::Ok().body(response_string))
+}
+
+#[get("/ticket/transaction/{transaction_id}/quantity")]
+pub async fn get_ticket_quantity_by_transaction(
+    path: web::Path<i32>,
+    app_config: web::Data<AppConfig>,
+) -> Result<HttpResponse, Error> {
+    let transaction_id = path.into_inner();
+
+    let ticket_quantity =
+        service_get_ticket_quantity_by_transaction(app_config.get_ref(), transaction_id).await?;
+
+    Ok(HttpResponse::Ok().body(ticket_quantity.to_string()))
 }
 
 #[post("/ticket")]

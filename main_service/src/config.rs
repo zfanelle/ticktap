@@ -7,6 +7,7 @@ pub struct ServerConfig {
     pub host: String,
     pub port: i32,
     pub db_connection_string: String,
+    pub ticketing_service_host: String,
 }
 
 #[derive(Deserialize)]
@@ -18,6 +19,7 @@ pub struct Config {
 pub struct AppConfig {
     pub db_pool: MySqlPool,
     pub http_client: reqwest::Client,
+    pub ticketing_service_host: String,
 }
 
 impl Config {
@@ -40,12 +42,16 @@ impl Config {
 
         let new_db_pool = db_pool.unwrap();
 
+        // Get ticketing service host
+
+        let ticketing_service_host = config.server.ticketing_service_host;
         // Initialize http client
         let client = reqwest::Client::new();
 
         let app_config = AppConfig {
             db_pool: new_db_pool,
             http_client: client,
+            ticketing_service_host: ticketing_service_host,
         };
 
         return app_config;

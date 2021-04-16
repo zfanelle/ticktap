@@ -6,7 +6,7 @@ use sqlx::Row;
 pub async fn create_ticket(app_config: &AppConfig, ticket: &Ticket) -> Result<(), RepositoryError> {
     let pool = app_config.db_pool.clone();
 
-    let sql = "INSERT INTO ticket (`transaction_id`)
+    let sql = "INSERT INTO ticket (`transaction`)
     VALUES(?)";
 
     sqlx::query(sql)
@@ -43,7 +43,10 @@ pub async fn get_all_tickets(app_config: &AppConfig) -> Result<Vec<Ticket>, Repo
     Ok(tickets)
 }
 
-pub async fn check_booked_tickets(app_config: &AppConfig) -> Result<i32, RepositoryError> {
+pub async fn check_booked_tickets(
+    app_config: &AppConfig,
+    transaction_id: i32,
+) -> Result<i32, RepositoryError> {
     let pool = app_config.db_pool.clone();
 
     let sql = "SELECT Count(*)
@@ -51,9 +54,12 @@ pub async fn check_booked_tickets(app_config: &AppConfig) -> Result<i32, Reposit
            JOIN `ticktap`.`transaction` tr
              ON ( tr.`id` = t.`transaction` )
            JOIN `ticktap`.`event` e
-             ON ( tr.`event` = e.`id`";
+             ON ( tr.`event` = e.`id`) WHERE tr.`id` = ?";
 
-    let ticket_count = sqlx::query(sql).fetch_one(&pool).await?;
+    let ticket_count = sqlx::query(sql)
+        .bind(transaction_id)
+        .fetch_one(&pool)
+        .await?;
 
     let ticket_count: i32 = ticket_count.get(0);
 

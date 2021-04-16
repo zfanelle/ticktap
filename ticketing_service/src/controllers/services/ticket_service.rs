@@ -46,19 +46,26 @@ pub async fn get_all_tickets_by_transaction(
     Ok(ticket_repository::get_all_tickets_by_transaction(app_config, transaction_id).await?)
 }
 
+pub async fn get_ticket_quantity_by_transaction(
+    app_config: &AppConfig,
+    transaction_id: i32,
+) -> Result<i32, RepositoryError> {
+    Ok(ticket_repository::check_booked_tickets(app_config, transaction_id).await?)
+}
+
 async fn sufficient_tickets_available(
     app_config: &AppConfig,
     transaction_id: i32,
     requested_ticket_quantity: i32,
 ) -> Result<bool, RepositoryError> {
-    let tickets_booked = ticket_repository::check_booked_tickets(app_config).await?;
+    let tickets_booked = get_ticket_quantity_by_transaction(app_config, transaction_id).await?;
 
     let max_ticket_capacity = get_event_ticket_max(app_config, transaction_id).await?;
 
     if tickets_booked + requested_ticket_quantity < max_ticket_capacity {
-        return Ok(false);
-    } else {
         return Ok(true);
+    } else {
+        return Ok(false);
     }
 }
 
@@ -70,14 +77,14 @@ async fn get_event_ticket_max(
 
     // Get the event id
     let transaction_endpoint =
-        app_config.main_service_host.clone() + "/transaction" + &transaction_id.to_string();
+        app_config.main_service_host.clone() + "/transaction/" + &transaction_id.to_string();
     let response = client
         .get(transaction_endpoint)
         .send()
         .await?
         .text()
         .await?;
-    let transaction: Transaction = serde_json::from_str(&response.to_owned())?;
+    let transaction: Transaction = serde_json::from_str(&response)?;
 
     let event_endpoint =
         app_config.main_service_host.clone() + "/event/" + &transaction.event.to_string();
